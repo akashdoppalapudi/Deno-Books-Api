@@ -1,4 +1,5 @@
 import { Context } from "https://deno.land/x/abc@v1.3.3/mod.ts";
+import { v4 } from "https://deno.land/std@0.100.0/uuid/mod.ts";
 
 import { Book } from "../models/bookModel.ts";
 
@@ -21,7 +22,7 @@ export const get_all_books = (ctx: Context) => {
 
 export const get_book = (ctx: Context) => {
 	const books = getBooks();
-	const id: number = Number(ctx.params.id);
+	const id: string = ctx.params.id;
 	const book = books.find((b: Book) => b.id === id);
 	if (book) {
 		return ctx.json(book, 200);
@@ -33,7 +34,7 @@ export const add_book = async (ctx: Context) => {
 	let books = getBooks();
 	const body: any = await ctx.body;
 	const book: Book = {
-		id: books.length + 1,
+		id: v4.generate(),
 		title: body.title,
 		author: body.author,
 	};
@@ -45,7 +46,7 @@ export const add_book = async (ctx: Context) => {
 
 export const delete_book = (ctx: Context) => {
 	let books = getBooks();
-	const id: number = Number(ctx.params.id);
+	const id: string = ctx.params.id;
 	const book = books.find((b: Book) => b.id === id);
 	if (book) {
 		books = books.filter((b: Book) => b.id !== id);
